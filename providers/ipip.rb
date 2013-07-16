@@ -1,5 +1,5 @@
 #
-# Provider:: ipip_tunnel
+# Provider:: tunnel_ipip
 # Author:: Guilhem Lettron <guilhem.lettron@youscribe.com>
 #
 # Copyright 2013, YouScribe.
@@ -22,7 +22,7 @@ def whyrun_supported?
 end
 
 def load_current_resource
-  @current_resource = Chef::Resource::IpipTunnel.new(@new_resource.name)
+  @current_resource = Chef::Resource::TunnelIpIp.new(@new_resource.name)
   @current_resource.host(@new_resource.host)
   @current_resource.remote(@new_resource.remote)
   @current_resource.local(@new_resource.local)

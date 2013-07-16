@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: ipip
+# Cookbook Name:: tunnel
 # Recipe:: default
 #
 # Author:: Guilhem Lettron <guilhem.lettron@youscribe.com>
@@ -19,4 +19,4 @@
 # limitations under the License.
 #
 
-include_recipe "ipip::install"
+include_recipe "tunnel::install"

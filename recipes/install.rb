@@ -1,5 +1,5 @@
 
 case node["plateform_family"]
 when "debian"
-#  package "ipip" unless node["ipip"]["use_kernel"]
+#  package "tunnel" unless node["tunnel"]["use_kernel"]
 end

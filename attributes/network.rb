@@ -1,1 +1,1 @@
-default['ipip']['network']['ipaddress'] = nil
+default['tunnel']['network']['ipaddress'] = nil
