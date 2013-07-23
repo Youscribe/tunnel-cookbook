@@ -22,7 +22,7 @@ def whyrun_supported?
 end
 
 def load_current_resource
-  @current_resource = Chef::Resource::TunnelIpIp.new(@new_resource.name)
+  @current_resource = Chef::Resource::TunnelIpip.new(@new_resource.name)
   @current_resource.host(@new_resource.host)
   @current_resource.remote(@new_resource.remote)
   @current_resource.local(@new_resource.local)
@@ -56,7 +56,7 @@ def tunnel_started?(host, remote)
   cmd = "ip tunnel show"
   ip = Mixlib::ShellOut.new(cmd)
   ip.run_command
-  find.stdout.each_line { |tunnel| return true if tunnel_equal?(tunnel, host, remote) }
+  ip.stdout.each_line { |tunnel| return true if tunnel_equal?(tunnel, host, remote) }
   return false
 end
 
@@ -65,11 +65,15 @@ def tunnel_equal?(tunnel, host, remote)
 end
 
 def install_tunnel
-  
+  true
+end
+
+def tunnel_installed?(host, remote)
+  false
 end
 
 def create_tunnel
-  cmd = "ip tunn add"
+  cmd = "ip tunnel add"
   cmd += " tun_#{@current_resource.host}"
   cmd += " mode ipip"
   cmd += " remote #{@current_resource.remote}"
