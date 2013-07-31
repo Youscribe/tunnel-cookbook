@@ -23,12 +23,14 @@ end
 
 def load_current_resource
   @current_resource = Chef::Resource::TunnelIpip.new(@new_resource.name)
+  @current_resource.name(@new_resource.name)
+  @current_resource.tunnel_name(@new_resource.tunnel_name)
   @current_resource.host(@new_resource.host)
   @current_resource.remote(@new_resource.remote)
   @current_resource.local(@new_resource.local)
   @current_resource.interface(@new_resource.interface)
   @current_resource.ttl(@new_resource.ttl)
-  @current_resource.started = true if tunnel_started?(@current_resource.host, @current_resource.remote)
+  @current_resource.started = true if tunnel_started?
   @current_resource.installed = true if tunnel_installed?(@current_resource.host, @current_resource.remote)
 end
 
@@ -52,16 +54,16 @@ action :install do
   end
 end
 
-def tunnel_started?(host, remote)
+def tunnel_started?
   cmd = "ip tunnel show"
   ip = Mixlib::ShellOut.new(cmd)
   ip.run_command
-  ip.stdout.each_line { |tunnel| return true if tunnel_equal?(tunnel, host, remote) }
+  ip.stdout.each_line { |tunnel| return true if tunnel_equal?(tunnel) }
   return false
 end
 
-def tunnel_equal?(tunnel, host, remote)
-  tunnel.include?("ip/ip") && tunnel.include?("tun_#{host}:") && tunnel.include?("remote #{remote}")
+def tunnel_equal?(tunnel)
+  tunnel.include?("ip/ip") && tunnel.include?("#{tunnel_name}:") && tunnel.include?("remote #{new_resource.remote}")
 end
 
 def install_tunnel
@@ -72,9 +74,17 @@ def tunnel_installed?(host, remote)
   false
 end
 
+def tunnel_name
+  if new_resource.tunnel_name
+    return new_resource.tunnel_name
+  else
+    return "tun_#{new_resource.host}"
+  end
+end
+
 def create_tunnel
   cmd = "ip tunnel add"
-  cmd += " tun_#{@current_resource.host}"
+  cmd += " #{tunnel_name}"
   cmd += " mode ipip"
   cmd += " remote #{@current_resource.remote}"
   cmd += " local #{@current_resource.local}" if @current_resource.local
